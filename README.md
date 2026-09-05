@@ -1,6 +1,10 @@
-# No Enderman Grief
+# Enderman Grief Control: _Disabled_
 
-<img width="1536" height="1024" alt="No Enderman Grief" src="https://github.com/user-attachments/assets/1fc9815b-32c1-4dbf-b5a9-91a0b8101209" />
+<img width="1920" height="1080" alt="2026-09-04_16 27 17" src="https://github.com/user-attachments/assets/f6986074-cf5d-46f2-adff-b42783476606" />
+
+# Enderman Grief Control: _Enabled_
+
+<img width="1920" height="1080" alt="2026-09-04_15 39 30" src="https://github.com/user-attachments/assets/d36db65c-d363-45f2-b617-69f1ffbf449c" />
 
 Every mob in Minecraft can be spawn-proofed and optimized around — except endermen. They teleport straight through spawn-proofing into hidden pockets (deep underground, inside your own base), and the moment one picks up a block, it sticks around far longer than it should, quietly eating into your mob cap and tanking spawn rates on any mob farm nearby. Run a base with several farms, and endermen become the one mob you can't design around — no matter how well everything else is optimized.
 
