@@ -11,7 +11,7 @@ Every mob can be spawn-proofed and optimized around — except endermen. They te
 - The global `mobGriefing` gamerule is never touched, so every other mob behaves exactly as vanilla intends.
 - Enable or disable it per world, if you want different behavior in the Nether, the End, or specific worlds.
 - Optional logging (with coordinates) if you want a record of what got blocked.
-- One admin-only command to reload settings without restarting the server — nothing changes for regular players.
+- One admin-only command, `/enderman`, to inspect and change every setting in-game — with tab-completion — without restarting the server.
 
 ## Requirements
 
@@ -79,9 +79,15 @@ This matches the message the [Fabric mod](../fabric-mod/) shows in chat, if you 
 
 ## Commands & permission
 
-| Command | Does | Permission | Default |
-|---|---|---|---|
-| `/negreload` | Reloads `config.yml` from disk, no restart needed | `noendermangrief.reload` | `op` |
+All subcommands live under `/enderman` and require the `noendermangrief.admin` permission (default `op`). Tab-completion is available at every argument position.
+
+| Command | Does |
+|---|---|
+| `/enderman reload` | Reloads `config.yml` from disk, no restart needed |
+| `/enderman status [world]` | Shows current default/logging state, or a specific world's effective state |
+| `/enderman toggle <world> [true\|false]` | Sets (or flips, if no value given) a per-world override, persisted to `config.yml` |
+| `/enderman set default <true\|false>` | Changes `default-enabled`, persisted to `config.yml` |
+| `/enderman set logging <true\|false>` | Changes `logging.enabled`, persisted to `config.yml` |
 
 ## Building from source
 

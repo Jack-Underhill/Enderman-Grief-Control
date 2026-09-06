@@ -6,15 +6,15 @@ author: Jack Underhill
 api-version: '1.21'
 
 commands:
-  negreload:
-    description: Reload NoEndermanGrief configuration.
-    usage: /negreload
+  enderman:
+    description: Manage NoEndermanGrief settings.
+    usage: /enderman <reload|status|toggle|set>
     # Permission is checked manually in onCommand (with a custom denial
     # message) rather than declared here, since declaring it here would
     # make Bukkit auto-gate the command with its own generic message
     # before onCommand ever runs.
 
 permissions:
-  noendermangrief.reload:
-    description: Allows reloading NoEndermanGrief configuration.
+  noendermangrief.admin:
+    description: Allows managing NoEndermanGrief settings (reload, status, toggle, set).
     default: op
