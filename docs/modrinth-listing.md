@@ -1,6 +1,6 @@
 # Modrinth listing draft
 
-Draft copy for the consolidated listing at https://modrinth.com/plugin/no-enderman-grief-2025 (hosts both the Paper plugin and the Fabric mod as separate versions in one project) — mirrors what's live as of 2026-09-05. Paste/adapt into Modrinth's editor, don't upload this file itself.
+Draft copy for the consolidated listing at https://modrinth.com/plugin/enderman-grief-control (hosts both the Paper plugin and the Fabric mod as separate versions in one project) — mirrors what's live as of 2026-09-07. Paste/adapt into Modrinth's editor, don't upload this file itself.
 
 **Title:** Enderman Grief Control
 
