@@ -19,7 +19,7 @@ This repo has two independent builds of the same idea, one for each way people p
 | **Minecraft** | 1.21.x | 1.21 |
 | **Install into** | `plugins/` | `mods/` |
 | **Config format** | `config.yml`, per-world | `config.json`, single toggle |
-| **Reload without restart** | Yes (`/negreload`) | Not yet |
+| **Reload without restart** | Yes (`/enderman reload`) | Not yet |
 
 If you just want to download and install one of these, go straight to whichever README fits how you play — [`paper-plugin/README.md`](paper-plugin/README.md) or [`fabric-mod/README.md`](fabric-mod/README.md) — each has full install and configuration instructions for that platform. This page is a map of the repo, not a full manual.
 
@@ -42,14 +42,14 @@ Neither depends on the other, and they can be built, tested, and released indepe
 Each project builds independently with its own toolchain:
 
 ```bash
-git clone https://github.com/Jack-Underhill/No-Enderman-Grief.git
+git clone https://github.com/Jack-Underhill/Enderman-Grief-Control.git
 
 # Paper plugin (Maven, Java 21)
-cd No-Enderman-Grief/paper-plugin
+cd Enderman-Grief-Control/paper-plugin
 mvn package
 
 # Fabric mod (Gradle, Java 21) — from the repo root instead
-cd No-Enderman-Grief/fabric-mod
+cd Enderman-Grief-Control/fabric-mod
 ./gradlew build
 ```
 

@@ -1,4 +1,4 @@
-package noendermangrief;
+package endermangriefcontrol;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -10,15 +10,15 @@ import org.mockbukkit.mockbukkit.entity.PlayerMock;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-class NoEndermanGriefCommandTest {
+class EndermanGriefControlCommandTest {
 
     private ServerMock server;
-    private NoEndermanGriefPlugin plugin;
+    private EndermanGriefControlPlugin plugin;
 
     @BeforeEach
     void setUp() {
         server = MockBukkit.mock();
-        plugin = MockBukkit.load(NoEndermanGriefPlugin.class);
+        plugin = MockBukkit.load(EndermanGriefControlPlugin.class);
     }
 
     @AfterEach
@@ -28,7 +28,7 @@ class NoEndermanGriefCommandTest {
 
     private PlayerMock authorizedPlayer() {
         PlayerMock player = server.addPlayer();
-        player.addAttachment(plugin, "noendermangrief.admin", true);
+        player.addAttachment(plugin, "endermangriefcontrol.admin", true);
         return player;
     }
 
@@ -38,7 +38,7 @@ class NoEndermanGriefCommandTest {
 
         server.dispatchCommand(player, "enderman reload");
 
-        player.assertSaid("NoEndermanGrief configuration reloaded.");
+        player.assertSaid("EndermanGriefControl configuration reloaded.");
     }
 
     @Test

@@ -6,10 +6,10 @@
     <modelVersion>4.0.0</modelVersion>
 
     <!-- Coordinates / identity of your plugin artifact -->
-    <groupId>noendermangrief</groupId>
-    <artifactId>no-enderman-grief-paper</artifactId>
+    <groupId>endermangriefcontrol</groupId>
+    <artifactId>enderman-grief-control-paper</artifactId>
     <version>${revision}</version>
-    <name>NoEndermanGrief</name>
+    <name>EndermanGriefControl</name>
     <description>Prevents endermen from picking up or placing blocks while keeping all other mob behavior vanilla.</description>
 
     <!-- Use Java 21 for compilation -->

@@ -1,6 +1,6 @@
-package noendermangrief;
+package endermangriefcontrol;
 
-import noendermangrief.listener.EndermanBlockListener;
+import endermangriefcontrol.listener.EndermanBlockListener;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.command.Command;
@@ -18,17 +18,17 @@ import java.util.stream.Collectors;
  *
  * This class is created and managed by the Paper/Spigot server.
  * It must match the "main" value in plugin.yml:
- *   noendermangrief.NoEndermanGriefPlugin
+ *   endermangriefcontrol.EndermanGriefControlPlugin
  */
-public class NoEndermanGriefPlugin extends JavaPlugin {
+public class EndermanGriefControlPlugin extends JavaPlugin {
 
     @Override
     public void onEnable() {
         // Ensure default config.yml is saved to the plugin data folder
-        // (plugins/NoEndermanGrief/config.yml) if it does not exist.
+        // (plugins/EndermanGriefControl/config.yml) if it does not exist.
         saveDefaultConfig();
 
-        getLogger().info("NoEndermanGrief is enabling...");
+        getLogger().info("EndermanGriefControl is enabling...");
 
         // Register our event listener so we can intercept enderman block changes.
         getServer().getPluginManager().registerEvents(
@@ -36,12 +36,12 @@ public class NoEndermanGriefPlugin extends JavaPlugin {
                 this
         );
 
-        getLogger().info("NoEndermanGrief has been enabled.");
+        getLogger().info("EndermanGriefControl has been enabled.");
     }
 
     @Override
     public void onDisable() {
-        getLogger().info("NoEndermanGrief has been disabled.");
+        getLogger().info("EndermanGriefControl has been disabled.");
     }
 
     /**
@@ -70,7 +70,7 @@ public class NoEndermanGriefPlugin extends JavaPlugin {
 
     /**
      * Logs that an enderman's block pickup or placement was denied. Bukkit's logger already
-     * prefixes console output with "[NoEndermanGrief]" and its own timestamp, so the message
+     * prefixes console output with "[EndermanGriefControl]" and its own timestamp, so the message
      * itself stays short.
      */
     public void logEndermanBlockCancel(Block block, String action) {
@@ -93,7 +93,7 @@ public class NoEndermanGriefPlugin extends JavaPlugin {
             return false; // Not our command.
         }
 
-        if (!sender.hasPermission("noendermangrief.admin")) {
+        if (!sender.hasPermission("endermangriefcontrol.admin")) {
             sender.sendMessage("You do not have permission to use this command.");
             return true;
         }
@@ -115,7 +115,7 @@ public class NoEndermanGriefPlugin extends JavaPlugin {
 
     private void handleReload(CommandSender sender) {
         reloadConfig();
-        sender.sendMessage("NoEndermanGrief configuration reloaded.");
+        sender.sendMessage("EndermanGriefControl configuration reloaded.");
         getLogger().info("Configuration reloaded by " + sender.getName());
     }
 
@@ -175,7 +175,7 @@ public class NoEndermanGriefPlugin extends JavaPlugin {
 
     @Override
     public List<String> onTabComplete(CommandSender sender, Command command, String alias, String[] args) {
-        if (!command.getName().equalsIgnoreCase("enderman") || !sender.hasPermission("noendermangrief.admin")) {
+        if (!command.getName().equalsIgnoreCase("enderman") || !sender.hasPermission("endermangriefcontrol.admin")) {
             return Collections.emptyList();
         }
 

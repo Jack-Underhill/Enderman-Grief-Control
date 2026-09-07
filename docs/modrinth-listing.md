@@ -73,7 +73,7 @@ Enderman Grief Control works out of the box with its default settings. Configura
 
 ### Paper
 
-Configuration is located at: `plugins/NoEndermanGrief/config.yml`
+Configuration is located at: `plugins/EndermanGriefControl/config.yml`
 
 After making changes, reload the configuration with the plugin's reload command or restart the server.
 
@@ -83,7 +83,7 @@ Configuration is located at: `config/no-enderman-grief.json`
 
 After making changes, restart the game or server for them to take effect.
 
-For a full reference of available configuration options, see the [GitHub documentation](https://github.com/Jack-Underhill/No-Enderman-Grief).
+For a full reference of available configuration options, see the [GitHub documentation](https://github.com/Jack-Underhill/Enderman-Grief-Control).
 
 ## Compatibility
 
@@ -95,7 +95,7 @@ For a full reference of available configuration options, see the [GitHub documen
 
 Enderman Grief Control is open source under the **Apache 2.0 License**.
 
-- [View the source code on GitHub](https://github.com/Jack-Underhill/No-Enderman-Grief)
-- [Report a bug or request a feature](https://github.com/Jack-Underhill/No-Enderman-Grief/issues)
+- [View the source code on GitHub](https://github.com/Jack-Underhill/Enderman-Grief-Control)
+- [Report a bug or request a feature](https://github.com/Jack-Underhill/Enderman-Grief-Control/issues)
 
 Bug reports and feedback are welcome.
