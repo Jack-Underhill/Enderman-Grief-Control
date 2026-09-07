@@ -21,3 +21,5 @@ jobs:
             echo "Pull requests into master must come from this repository's dev branch."
             exit 1
           fi
+
+          test
