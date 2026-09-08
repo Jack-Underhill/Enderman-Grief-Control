@@ -1,11 +1,13 @@
 package noendermangrief.fabric;
 
 import net.fabricmc.api.ModInitializer;
+import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.monster.EnderMan;
+import noendermangrief.fabric.command.EndermanCommand;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -19,11 +21,17 @@ public final class NoEndermanGriefMod implements ModInitializer {
     @Override
     public void onInitialize() {
         config = NoEndermanGriefConfig.load();
+        CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) ->
+                EndermanCommand.register(dispatcher));
         LOGGER.info("NoEndermanGrief has been initialized.");
     }
 
     public static NoEndermanGriefConfig getConfig() {
         return config;
+    }
+
+    public static void setConfig(NoEndermanGriefConfig newConfig) {
+        config = newConfig;
     }
 
     /**
