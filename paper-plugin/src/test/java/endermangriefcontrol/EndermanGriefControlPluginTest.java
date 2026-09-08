@@ -1,4 +1,4 @@
-package noendermangrief;
+package endermangriefcontrol;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -9,15 +9,15 @@ import org.mockbukkit.mockbukkit.ServerMock;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-class NoEndermanGriefPluginTest {
+class EndermanGriefControlPluginTest {
 
     private ServerMock server;
-    private NoEndermanGriefPlugin plugin;
+    private EndermanGriefControlPlugin plugin;
 
     @BeforeEach
     void setUp() {
         server = MockBukkit.mock();
-        plugin = MockBukkit.load(NoEndermanGriefPlugin.class);
+        plugin = MockBukkit.load(EndermanGriefControlPlugin.class);
     }
 
     @AfterEach
