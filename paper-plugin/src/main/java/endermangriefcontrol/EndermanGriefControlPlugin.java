@@ -1,11 +1,14 @@
 package endermangriefcontrol;
 
+import endermangriefcontrol.heldblock.HeldBlockHandling;
+import endermangriefcontrol.heldblock.HeldBlockMonitor;
 import endermangriefcontrol.listener.EndermanBlockListener;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.entity.Enderman;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.Collections;
@@ -22,6 +25,8 @@ import java.util.stream.Collectors;
  */
 public class EndermanGriefControlPlugin extends JavaPlugin {
 
+    private HeldBlockMonitor heldBlockMonitor;
+
     @Override
     public void onEnable() {
         // Ensure default config.yml is saved to the plugin data folder
@@ -35,6 +40,12 @@ public class EndermanGriefControlPlugin extends JavaPlugin {
                 new EndermanBlockListener(this),
                 this
         );
+
+        // Finds and resolves endermen already stuck holding a block from before the plugin
+        // was enabled (or from a window where it was toggled off).
+        heldBlockMonitor = new HeldBlockMonitor(this);
+        getServer().getPluginManager().registerEvents(heldBlockMonitor, this);
+        heldBlockMonitor.runDiscoveryScan();
 
         getLogger().info("EndermanGriefControl has been enabled.");
     }
@@ -69,6 +80,24 @@ public class EndermanGriefControlPlugin extends JavaPlugin {
     }
 
     /**
+     * How stuck held-block endermen are handled in a world, same default/override resolution as
+     * {@link #isWorldEnabled(String)}. Defaults to {@link HeldBlockHandling#AUTO_CLEAR} - this
+     * problem is meant to be resolved with no configuration needed; alerting for manual hunting is
+     * an opt-in alternative for players who don't want it resolved for them automatically.
+     */
+    public HeldBlockHandling getHeldBlockHandling(String worldName) {
+        HeldBlockHandling defaultHandling = HeldBlockHandling.fromConfig(
+                getConfig().getString("default-held-block-handling"), HeldBlockHandling.AUTO_CLEAR);
+
+        ConfigurationSection heldBlockWorldsSection = getConfig().getConfigurationSection("held-block-worlds");
+        if (heldBlockWorldsSection != null && heldBlockWorldsSection.contains(worldName)) {
+            return HeldBlockHandling.fromConfig(heldBlockWorldsSection.getString(worldName), defaultHandling);
+        }
+
+        return defaultHandling;
+    }
+
+    /**
      * Logs that an enderman's block pickup or placement was denied. Bukkit's logger already
      * prefixes console output with "[EndermanGriefControl]" and its own timestamp, so the message
      * itself stays short.
@@ -76,6 +105,30 @@ public class EndermanGriefControlPlugin extends JavaPlugin {
     public void logEndermanBlockCancel(Block block, String action) {
         String coords = block.getX() + ", " + block.getY() + ", " + block.getZ();
         getLogger().info("Denied " + action + " at (" + coords + ").");
+    }
+
+    /**
+     * Logs that an enderman is still stuck holding a block it can no longer place - deliberately
+     * worded distinctly from {@link #logEndermanBlockCancel} so it doesn't blend into routine
+     * denial logging when read in a console/log file.
+     */
+    public void logHeldBlockAlert(Enderman enderman) {
+        String coords = enderman.getLocation().getBlockX() + ", " + enderman.getLocation().getBlockY()
+                + ", " + enderman.getLocation().getBlockZ();
+        getLogger().info("Still holding a block at (" + coords + ").");
+    }
+
+    /**
+     * Logs that a stuck holder was auto-cleared. Unlike the other two log methods, this one isn't
+     * gated by any logging toggle - it only ever fires once per enderman (auto-clear is a one-time
+     * resolution, not a repeating status ping), and it's arguably the single most meaningful line
+     * this plugin can log: it's confirmation that the exact problem the plugin exists to solve was
+     * just fixed for good, not just a routine "prevented a new attempt" notice.
+     */
+    public void logHeldBlockCleared(Enderman enderman) {
+        String coords = enderman.getLocation().getBlockX() + ", " + enderman.getLocation().getBlockY()
+                + ", " + enderman.getLocation().getBlockZ();
+        getLogger().info("Cleared a persisted holder at (" + coords + ").");
     }
 
     private static final List<String> SUBCOMMANDS = List.of("reload", "status", "toggle", "set");
@@ -115,6 +168,7 @@ public class EndermanGriefControlPlugin extends JavaPlugin {
 
     private void handleReload(CommandSender sender) {
         reloadConfig();
+        heldBlockMonitor.runDiscoveryScan(); // Config may have re-enabled worlds by hand-edit.
         sender.sendMessage("EndermanGriefControl configuration reloaded.");
         getLogger().info("Configuration reloaded by " + sender.getName());
     }
@@ -145,9 +199,13 @@ public class EndermanGriefControlPlugin extends JavaPlugin {
         }
 
         String world = args[1];
-        boolean newValue = args.length >= 3 ? Boolean.parseBoolean(args[2]) : !isWorldEnabled(world);
+        boolean wasEnabled = isWorldEnabled(world);
+        boolean newValue = args.length >= 3 ? Boolean.parseBoolean(args[2]) : !wasEnabled;
         getConfig().set("worlds." + world, newValue);
         saveConfig();
+        if (newValue && !wasEnabled) {
+            heldBlockMonitor.runDiscoveryScan(); // May have accumulated stuck holders while disabled.
+        }
         sender.sendMessage("World '" + world + "' is now " + (newValue ? "enabled" : "disabled") + ".");
     }
 
@@ -160,8 +218,12 @@ public class EndermanGriefControlPlugin extends JavaPlugin {
         boolean value = Boolean.parseBoolean(args[2]);
         switch (args[1].toLowerCase(Locale.ROOT)) {
             case "default" -> {
+                boolean wasDefaultEnabled = getConfig().getBoolean("default-enabled", true);
                 getConfig().set("default-enabled", value);
                 saveConfig();
+                if (value && !wasDefaultEnabled) {
+                    heldBlockMonitor.runDiscoveryScan(); // May have accumulated stuck holders while disabled.
+                }
                 sender.sendMessage("Default is now " + (value ? "enabled" : "disabled") + ".");
             }
             case "logging" -> {
