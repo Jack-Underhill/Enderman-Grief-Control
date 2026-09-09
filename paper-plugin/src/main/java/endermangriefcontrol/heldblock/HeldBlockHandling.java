@@ -30,4 +30,11 @@ public enum HeldBlockHandling {
             return fallback;
         }
     }
+
+    /**
+     * The config/command string form, e.g. {@code AUTO_CLEAR} -> {@code "auto-clear"}.
+     */
+    public String toConfigValue() {
+        return name().toLowerCase(Locale.ROOT).replace('_', '-');
+    }
 }

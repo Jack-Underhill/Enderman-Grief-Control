@@ -102,8 +102,10 @@ All subcommands live under `/enderman` and require the `endermangriefcontrol.adm
 | `/enderman reload` | Reloads `config.yml` from disk, no restart needed |
 | `/enderman status [world]` | Shows current default/logging state, or a specific world's effective state |
 | `/enderman toggle <world> [true\|false]` | Sets (or flips, if no value given) a per-world override, persisted to `config.yml` |
+| `/enderman held-block <world> <auto-clear\|alert\|off>` | Sets a per-world held-block handling override, persisted to `config.yml` |
 | `/enderman set default <true\|false>` | Changes `default-enabled`, persisted to `config.yml` |
 | `/enderman set logging <true\|false>` | Changes `logging.enabled`, persisted to `config.yml` |
+| `/enderman set held-block-default <auto-clear\|alert\|off>` | Changes `default-held-block-handling`, persisted to `config.yml` |
 
 ## Building from source
 

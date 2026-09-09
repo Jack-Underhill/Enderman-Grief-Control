@@ -86,8 +86,7 @@ public class EndermanGriefControlPlugin extends JavaPlugin {
      * an opt-in alternative for players who don't want it resolved for them automatically.
      */
     public HeldBlockHandling getHeldBlockHandling(String worldName) {
-        HeldBlockHandling defaultHandling = HeldBlockHandling.fromConfig(
-                getConfig().getString("default-held-block-handling"), HeldBlockHandling.AUTO_CLEAR);
+        HeldBlockHandling defaultHandling = getDefaultHeldBlockHandling();
 
         ConfigurationSection heldBlockWorldsSection = getConfig().getConfigurationSection("held-block-worlds");
         if (heldBlockWorldsSection != null && heldBlockWorldsSection.contains(worldName)) {
@@ -95,6 +94,14 @@ public class EndermanGriefControlPlugin extends JavaPlugin {
         }
 
         return defaultHandling;
+    }
+
+    /**
+     * The fallback handling used for any world not explicitly listed under "held-block-worlds".
+     */
+    public HeldBlockHandling getDefaultHeldBlockHandling() {
+        return HeldBlockHandling.fromConfig(
+                getConfig().getString("default-held-block-handling"), HeldBlockHandling.AUTO_CLEAR);
     }
 
     /**
@@ -131,12 +138,13 @@ public class EndermanGriefControlPlugin extends JavaPlugin {
         getLogger().info("Cleared a persisted holder at (" + coords + ").");
     }
 
-    private static final List<String> SUBCOMMANDS = List.of("reload", "status", "toggle", "set");
-    private static final List<String> SET_KEYS = List.of("default", "logging");
+    private static final List<String> SUBCOMMANDS = List.of("reload", "status", "toggle", "held-block", "set");
+    private static final List<String> SET_KEYS = List.of("default", "logging", "held-block-default");
     private static final List<String> BOOLEANS = List.of("true", "false");
+    private static final List<String> HELD_BLOCK_MODES = List.of("auto-clear", "alert", "off");
 
     /**
-     * Command handler for: /enderman <reload|status|toggle|set>
+     * Command handler for: /enderman <reload|status|toggle|held-block|set>
      * Lets admins reload config.yml, inspect current settings, and change them
      * in-game, all without restarting the server.
      */
@@ -152,7 +160,7 @@ public class EndermanGriefControlPlugin extends JavaPlugin {
         }
 
         if (args.length == 0) {
-            sender.sendMessage("Usage: /enderman <reload|status|toggle|set>");
+            sender.sendMessage("Usage: /enderman <reload|status|toggle|held-block|set>");
             return true;
         }
 
@@ -160,8 +168,9 @@ public class EndermanGriefControlPlugin extends JavaPlugin {
             case "reload" -> handleReload(sender);
             case "status" -> handleStatus(sender, args);
             case "toggle" -> handleToggle(sender, args);
+            case "held-block" -> handleHeldBlock(sender, args);
             case "set" -> handleSet(sender, args);
-            default -> sender.sendMessage("Unknown subcommand. Usage: /enderman <reload|status|toggle|set>");
+            default -> sender.sendMessage("Unknown subcommand. Usage: /enderman <reload|status|toggle|held-block|set>");
         }
         return true;
     }
@@ -176,18 +185,27 @@ public class EndermanGriefControlPlugin extends JavaPlugin {
     private void handleStatus(CommandSender sender, String[] args) {
         if (args.length >= 2) {
             String world = args[1];
-            sender.sendMessage("World '" + world + "': " + (isWorldEnabled(world) ? "enabled" : "disabled"));
+            sender.sendMessage("World '" + world + "': " + (isWorldEnabled(world) ? "enabled" : "disabled")
+                    + ", held-block: " + getHeldBlockHandling(world).toConfigValue());
             return;
         }
 
         boolean defaultEnabled = getConfig().getBoolean("default-enabled", true);
         sender.sendMessage("Default: " + (defaultEnabled ? "enabled" : "disabled")
-                + ", logging: " + (isLoggingEnabled() ? "enabled" : "disabled"));
+                + ", logging: " + (isLoggingEnabled() ? "enabled" : "disabled")
+                + ", held-block: " + getDefaultHeldBlockHandling().toConfigValue());
 
         ConfigurationSection worldsSection = getConfig().getConfigurationSection("worlds");
         if (worldsSection != null) {
             for (String world : worldsSection.getKeys(false)) {
                 sender.sendMessage("  " + world + ": " + (worldsSection.getBoolean(world) ? "enabled" : "disabled"));
+            }
+        }
+
+        ConfigurationSection heldBlockWorldsSection = getConfig().getConfigurationSection("held-block-worlds");
+        if (heldBlockWorldsSection != null) {
+            for (String world : heldBlockWorldsSection.getKeys(false)) {
+                sender.sendMessage("  " + world + " held-block: " + getHeldBlockHandling(world).toConfigValue());
             }
         }
     }
@@ -209,15 +227,33 @@ public class EndermanGriefControlPlugin extends JavaPlugin {
         sender.sendMessage("World '" + world + "' is now " + (newValue ? "enabled" : "disabled") + ".");
     }
 
-    private void handleSet(CommandSender sender, String[] args) {
+    private void handleHeldBlock(CommandSender sender, String[] args) {
         if (args.length < 3) {
-            sender.sendMessage("Usage: /enderman set <default|logging> <true|false>");
+            sender.sendMessage("Usage: /enderman held-block <world> <auto-clear|alert|off>");
             return;
         }
 
-        boolean value = Boolean.parseBoolean(args[2]);
+        String world = args[1];
+        HeldBlockHandling mode = HeldBlockHandling.fromConfig(args[2], null);
+        if (mode == null) {
+            sender.sendMessage("Usage: /enderman held-block <world> <auto-clear|alert|off>");
+            return;
+        }
+
+        getConfig().set("held-block-worlds." + world, mode.toConfigValue());
+        saveConfig();
+        sender.sendMessage("Held-block handling for world '" + world + "' is now " + mode.toConfigValue() + ".");
+    }
+
+    private void handleSet(CommandSender sender, String[] args) {
+        if (args.length < 3) {
+            sender.sendMessage("Usage: /enderman set <default|logging|held-block-default> <value>");
+            return;
+        }
+
         switch (args[1].toLowerCase(Locale.ROOT)) {
             case "default" -> {
+                boolean value = Boolean.parseBoolean(args[2]);
                 boolean wasDefaultEnabled = getConfig().getBoolean("default-enabled", true);
                 getConfig().set("default-enabled", value);
                 saveConfig();
@@ -227,11 +263,22 @@ public class EndermanGriefControlPlugin extends JavaPlugin {
                 sender.sendMessage("Default is now " + (value ? "enabled" : "disabled") + ".");
             }
             case "logging" -> {
+                boolean value = Boolean.parseBoolean(args[2]);
                 getConfig().set("logging.enabled", value);
                 saveConfig();
                 sender.sendMessage("Logging is now " + (value ? "enabled" : "disabled") + ".");
             }
-            default -> sender.sendMessage("Usage: /enderman set <default|logging> <true|false>");
+            case "held-block-default" -> {
+                HeldBlockHandling mode = HeldBlockHandling.fromConfig(args[2], null);
+                if (mode == null) {
+                    sender.sendMessage("Usage: /enderman set held-block-default <auto-clear|alert|off>");
+                    return;
+                }
+                getConfig().set("default-held-block-handling", mode.toConfigValue());
+                saveConfig();
+                sender.sendMessage("Default held-block handling is now " + mode.toConfigValue() + ".");
+            }
+            default -> sender.sendMessage("Usage: /enderman set <default|logging|held-block-default> <value>");
         }
     }
 
@@ -246,14 +293,24 @@ public class EndermanGriefControlPlugin extends JavaPlugin {
         }
 
         String subcommand = args[0].toLowerCase(Locale.ROOT);
-        if (args.length == 2 && (subcommand.equals("toggle") || subcommand.equals("status"))) {
+        if (args.length == 2
+                && (subcommand.equals("toggle") || subcommand.equals("status") || subcommand.equals("held-block"))) {
             List<String> worlds = getServer().getWorlds().stream().map(World::getName).collect(Collectors.toList());
             return startingWith(worlds, args[1]);
         }
         if (args.length == 2 && subcommand.equals("set")) {
             return startingWith(SET_KEYS, args[1]);
         }
-        if (args.length == 3 && (subcommand.equals("toggle") || subcommand.equals("set"))) {
+        if (args.length == 3 && subcommand.equals("toggle")) {
+            return startingWith(BOOLEANS, args[2]);
+        }
+        if (args.length == 3 && subcommand.equals("held-block")) {
+            return startingWith(HELD_BLOCK_MODES, args[2]);
+        }
+        if (args.length == 3 && subcommand.equals("set")) {
+            if (args[1].equalsIgnoreCase("held-block-default")) {
+                return startingWith(HELD_BLOCK_MODES, args[2]);
+            }
             return startingWith(BOOLEANS, args[2]);
         }
 
