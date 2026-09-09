@@ -8,7 +8,7 @@
 
 Every mob in Minecraft can be spawn-proofed and optimized around — except endermen. They teleport straight through spawn-proofing into hidden pockets (deep underground, inside your own base), and the moment one picks up a block, it sticks around far longer than it should, quietly eating into your mob cap and tanking spawn rates on any mob farm nearby. Run a base with several farms, and endermen become the one mob you can't design around — no matter how well everything else is optimized.
 
-No Enderman Grief fixes that at the source: endermen simply can't pick up or place blocks anymore, full stop. No more untouchable, teleporting endermen souring your farm's spawn rates — and as a bonus, your builds stop getting quietly grief'd overnight too. Every other mob behaves exactly as vanilla intends; only endermen are affected, and the `mobGriefing` gamerule itself is never touched.
+Enderman Grief Control fixes that at the source: endermen simply can't pick up or place blocks anymore, full stop. No more untouchable, teleporting endermen souring your farm's spawn rates — and as a bonus, your builds stop getting quietly grief'd overnight too. Every other mob behaves exactly as vanilla intends; only endermen are affected, and the `mobGriefing` gamerule itself is never touched.
 
 This repo has two independent builds of the same idea, one for each way people play Minecraft:
 

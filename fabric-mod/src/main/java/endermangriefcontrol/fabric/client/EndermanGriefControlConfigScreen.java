@@ -1,11 +1,11 @@
-package noendermangrief.fabric.client;
+package endermangriefcontrol.fabric.client;
 
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.CycleButton;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
-import noendermangrief.fabric.NoEndermanGriefConfig;
-import noendermangrief.fabric.NoEndermanGriefMod;
+import endermangriefcontrol.fabric.EndermanGriefControlConfig;
+import endermangriefcontrol.fabric.EndermanGriefControlMod;
 
 /**
  * A hand-rolled vanilla settings screen (no Cloth Config dependency, just two booleans) shown by
@@ -13,7 +13,7 @@ import noendermangrief.fabric.NoEndermanGriefMod;
  * effects are immediate: the pickup/placement mixins already re-read that same instance on every
  * check, so no restart or reload is needed.
  */
-public final class NoEndermanGriefConfigScreen extends Screen {
+public final class EndermanGriefControlConfigScreen extends Screen {
 
     private static final int BUTTON_WIDTH = 200;
     private static final int BUTTON_HEIGHT = 20;
@@ -21,14 +21,14 @@ public final class NoEndermanGriefConfigScreen extends Screen {
 
     private final Screen parent;
 
-    public NoEndermanGriefConfigScreen(Screen parent) {
-        super(Component.literal("NoEndermanGrief"));
+    public EndermanGriefControlConfigScreen(Screen parent) {
+        super(Component.literal("EndermanGriefControl"));
         this.parent = parent;
     }
 
     @Override
     protected void init() {
-        NoEndermanGriefConfig config = NoEndermanGriefMod.getConfig();
+        EndermanGriefControlConfig config = EndermanGriefControlMod.getConfig();
         int centerX = this.width / 2 - BUTTON_WIDTH / 2;
         int startY = this.height / 2 - SPACING;
 

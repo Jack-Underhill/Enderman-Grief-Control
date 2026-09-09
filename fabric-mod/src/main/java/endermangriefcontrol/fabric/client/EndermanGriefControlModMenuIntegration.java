@@ -1,4 +1,4 @@
-package noendermangrief.fabric.client;
+package endermangriefcontrol.fabric.client;
 
 import com.terraformersmc.modmenu.api.ConfigScreenFactory;
 import com.terraformersmc.modmenu.api.ModMenuApi;
@@ -8,10 +8,10 @@ import com.terraformersmc.modmenu.api.ModMenuApi;
  * server, and never invoked at all if the player doesn't have Mod Menu installed (see the
  * modCompileOnly dependency comment in build.gradle).
  */
-public final class NoEndermanGriefModMenuIntegration implements ModMenuApi {
+public final class EndermanGriefControlModMenuIntegration implements ModMenuApi {
 
     @Override
     public ConfigScreenFactory<?> getModConfigScreenFactory() {
-        return NoEndermanGriefConfigScreen::new;
+        return EndermanGriefControlConfigScreen::new;
     }
 }

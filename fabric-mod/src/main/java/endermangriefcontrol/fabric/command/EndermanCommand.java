@@ -1,4 +1,4 @@
-package noendermangrief.fabric.command;
+package endermangriefcontrol.fabric.command;
 
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.BoolArgumentType;
@@ -6,8 +6,8 @@ import com.mojang.brigadier.context.CommandContext;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.network.chat.Component;
-import noendermangrief.fabric.NoEndermanGriefConfig;
-import noendermangrief.fabric.NoEndermanGriefMod;
+import endermangriefcontrol.fabric.EndermanGriefControlConfig;
+import endermangriefcontrol.fabric.EndermanGriefControlMod;
 
 /**
  * Registers /enderman <reload|status|toggle|set>, mirroring the Paper plugin's command shape.
@@ -27,7 +27,7 @@ public final class EndermanCommand {
                 .then(Commands.literal("reload").executes(EndermanCommand::reload))
                 .then(Commands.literal("status").executes(EndermanCommand::status))
                 .then(Commands.literal("toggle")
-                        .executes(ctx -> setEnabled(ctx, !NoEndermanGriefMod.getConfig().enabled))
+                        .executes(ctx -> setEnabled(ctx, !EndermanGriefControlMod.getConfig().enabled))
                         .then(Commands.argument("enabled", BoolArgumentType.bool())
                                 .executes(ctx -> setEnabled(ctx, BoolArgumentType.getBool(ctx, "enabled")))))
                 .then(Commands.literal("set")
@@ -37,21 +37,21 @@ public final class EndermanCommand {
     }
 
     private static int reload(CommandContext<CommandSourceStack> ctx) {
-        NoEndermanGriefMod.setConfig(NoEndermanGriefConfig.load());
-        ctx.getSource().sendSuccess(() -> Component.literal("NoEndermanGrief configuration reloaded."), true);
+        EndermanGriefControlMod.setConfig(EndermanGriefControlConfig.load());
+        ctx.getSource().sendSuccess(() -> Component.literal("EndermanGriefControl configuration reloaded."), true);
         return 1;
     }
 
     private static int status(CommandContext<CommandSourceStack> ctx) {
-        NoEndermanGriefConfig config = NoEndermanGriefMod.getConfig();
+        EndermanGriefControlConfig config = EndermanGriefControlMod.getConfig();
         ctx.getSource().sendSuccess(() -> Component.literal(
-                "Enabled: " + (config.enabled ? "enabled" : "disabled")
+                "Prevention: " + (config.enabled ? "enabled" : "disabled")
                         + ", logging: " + (config.loggingEnabled ? "enabled" : "disabled")), false);
         return 1;
     }
 
     private static int setEnabled(CommandContext<CommandSourceStack> ctx, boolean value) {
-        NoEndermanGriefConfig config = NoEndermanGriefMod.getConfig();
+        EndermanGriefControlConfig config = EndermanGriefControlMod.getConfig();
         config.enabled = value;
         config.save();
         ctx.getSource().sendSuccess(() -> Component.literal(
@@ -60,7 +60,7 @@ public final class EndermanCommand {
     }
 
     private static int setLogging(CommandContext<CommandSourceStack> ctx, boolean value) {
-        NoEndermanGriefConfig config = NoEndermanGriefMod.getConfig();
+        EndermanGriefControlConfig config = EndermanGriefControlMod.getConfig();
         config.loggingEnabled = value;
         config.save();
         ctx.getSource().sendSuccess(() -> Component.literal(

@@ -1,4 +1,4 @@
-# No Enderman Grief (Fabric)
+# Enderman Grief Control (Fabric)
 
 Every mob can be spawn-proofed and optimized around — except endermen. They teleport straight through spawn-proofing into hidden pockets (deep underground, inside your base), and the moment one picks up a block, it sticks around far longer than it should, quietly eating into the mob cap and tanking spawn rates on any mob farm nearby. (And yes, they also just grief your builds overnight.)
 
@@ -26,7 +26,7 @@ Enderman block pickup and placement are each governed by a private AI goal insid
 ```
 
 - `enabled` — whether enderman block pickup/placement is prevented.
-- `loggingEnabled` — announce every prevented pickup/placement, both in the log file and as a short, color-coded chat message (e.g. `[NoEndermanGrief] Denied pickup at (10, -60, -13).`), so it's visible without checking logs.
+- `loggingEnabled` — announce every prevented pickup/placement, both in the log file and as a short, color-coded chat message (e.g. `[Enderman] Denied pickup at (10, -60, -13).`), so it's visible without checking logs.
 
 There's no per-world setting (unlike the Paper plugin) — singleplayer doesn't have Bukkit's multi-world-folder concept, so a single global toggle covers it.
 
@@ -64,8 +64,8 @@ No MockBukkit-equivalent testing framework exists for Mixin-based mods at this s
 ## Building from source
 
 ```bash
-git clone https://github.com/Jack-Underhill/No-Enderman-Grief.git
-cd No-Enderman-Grief/fabric-mod
+git clone https://github.com/Jack-Underhill/Enderman-Grief-Control.git
+cd Enderman-Grief-Control/fabric-mod
 ./gradlew build
 ```
 
