@@ -35,7 +35,7 @@ Enderman block pickup and placement are each governed by a private AI goal insid
 
 There's no per-world setting (unlike the Paper plugin) — singleplayer doesn't have Bukkit's multi-world-folder concept, so a single global toggle covers it.
 
-Both settings apply live, no restart needed, two ways: the `/enderman` command below (works everywhere, including dedicated servers), or — singleplayer/self-host only, since it can't reach a separate dedicated server — [Mod Menu](https://modrinth.com/mod/modmenu)'s settings screen for this mod, if installed.
+All three settings apply live, no restart needed, two ways: the `/enderman` command below (works everywhere, including dedicated servers), or — singleplayer/self-host only, since it can't reach a separate dedicated server — [Mod Menu](https://modrinth.com/mod/modmenu)'s settings screen for this mod, if installed. The Mod Menu screen groups `loggingEnabled` and `heldBlockHandling` under a "Logging" heading, labeled "Log Denied Attempts" and "Stuck Holders" respectively, to keep the routine per-attempt denial log visually distinct from the one-time/periodic stuck-holder handling.
 
 ## Commands & permission
 
@@ -62,7 +62,7 @@ No MockBukkit-equivalent testing framework exists for Mixin-based mods at this s
 - [ ] Set `enabled: false` in `config/no-enderman-grief.json`, restart — confirm vanilla griefing behavior resumes.
 - [ ] Confirm other `mobGriefing`-gated behavior is unaffected: creepers still destroy terrain, villagers still farm.
 - [ ] With `loggingEnabled: true`, confirm a color-coded message appears in chat and the same message appears in the log file (`logs/latest.log`) for each prevented pickup/placement; with `false`, confirm both stay silent.
-- [ ] With Mod Menu installed, open its settings screen for this mod, toggle both settings, and confirm the change to enderman behavior applies immediately (no restart, no reopening the world).
+- [ ] With Mod Menu installed, open its settings screen for this mod, confirm "Log Denied Attempts" and "Stuck Holders" appear grouped under a "Logging" heading, cycle all three settings, and confirm the change to enderman behavior applies immediately (no restart, no reopening the world). Hover each of the three buttons (including both values of the two on/off toggles, and all three "Stuck Holders" values) and confirm the tooltip text matches the currently-selected state.
 - [ ] Without Mod Menu installed, confirm the game still launches normally (the integration is compile-time only and must not be required).
 - [ ] Run `/enderman status`, `/enderman toggle false`, `/enderman set logging true`, `/enderman set held-block alert`, confirming tab-completion at every argument position (including the `auto-clear`/`alert`/`off` suggestions) and that `config/no-enderman-grief.json` reflects each change on disk.
 - [ ] Hand-edit `config/no-enderman-grief.json` externally, then run `/enderman reload` — confirm the change takes effect without restarting.
