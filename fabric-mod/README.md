@@ -21,12 +21,17 @@ Enderman block pickup and placement are each governed by a private AI goal insid
 ```json
 {
   "enabled": true,
-  "loggingEnabled": false
+  "loggingEnabled": false,
+  "heldBlockHandling": "auto-clear"
 }
 ```
 
 - `enabled` — whether enderman block pickup/placement is prevented.
 - `loggingEnabled` — announce every prevented pickup/placement, both in the log file and as a short, color-coded chat message (e.g. `[Enderman] Denied pickup at (10, -60, -13).`), so it's visible without checking logs.
+- `heldBlockHandling` — how an enderman already stuck holding a block (from before the mod was enabled, or a window where it was toggled off) is handled, checked every ~2 minutes:
+  - `"auto-clear"` (the default) — removes the carried block outright, nothing dropped. Resolved automatically, no configuration needed. A successful clear is **always** logged/announced (`Cleared a persisted holder at (...)`, aqua), regardless of `loggingEnabled` — it's a one-time event confirming an actual pre-existing problem just got fixed, not routine denial-spam.
+  - `"alert"` — instead of clearing, periodically re-announces the enderman's location (`Still holding a block at (...)`, gold — distinct from the light-purple denial messages above), so you can hunt it down and kill it yourself. Not gated by `loggingEnabled` - choosing this mode is itself the opt-in. For players who'd rather nothing be resolved on their behalf automatically.
+  - `"off"` — leave it alone entirely.
 
 There's no per-world setting (unlike the Paper plugin) — singleplayer doesn't have Bukkit's multi-world-folder concept, so a single global toggle covers it.
 
@@ -60,6 +65,9 @@ No MockBukkit-equivalent testing framework exists for Mixin-based mods at this s
 - [ ] Without Mod Menu installed, confirm the game still launches normally (the integration is compile-time only and must not be required).
 - [ ] Run `/enderman status`, `/enderman toggle false`, `/enderman set logging true`, confirming tab-completion at every argument position and that `config/no-enderman-grief.json` reflects each change on disk.
 - [ ] Hand-edit `config/no-enderman-grief.json` externally, then run `/enderman reload` — confirm the change takes effect without restarting.
+- [ ] `/summon minecraft:enderman ~ ~ ~ {carried_block:{Name:"minecraft:dirt"}}` (or toggle `enabled` off, let one pick up naturally, then toggle it back on) to create a stuck holder. With `heldBlockHandling: "auto-clear"` (the default), confirm the carried block is removed within ~2 minutes with nothing dropped, and `Cleared a persisted holder at (...)` is announced in aqua regardless of `loggingEnabled`.
+- [ ] With `heldBlockHandling: "alert"` (regardless of `loggingEnabled`), confirm the same stuck enderman instead gets `Still holding a block at (...)` re-announced in gold every ~2 minutes without ever losing its carried block; killing it stops further alerts immediately.
+- [ ] With `heldBlockHandling: "off"`, confirm a stuck holder is neither announced nor cleared.
 
 ## Building from source
 

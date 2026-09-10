@@ -38,6 +38,7 @@ public final class EndermanCommand {
 
     private static int reload(CommandContext<CommandSourceStack> ctx) {
         EndermanGriefControlMod.setConfig(EndermanGriefControlConfig.load());
+        EndermanGriefControlMod.getHeldBlockMonitor().runDiscoveryScan(); // Config may have re-enabled by hand-edit.
         ctx.getSource().sendSuccess(() -> Component.literal("EndermanGriefControl configuration reloaded."), true);
         return 1;
     }
@@ -52,8 +53,12 @@ public final class EndermanCommand {
 
     private static int setEnabled(CommandContext<CommandSourceStack> ctx, boolean value) {
         EndermanGriefControlConfig config = EndermanGriefControlMod.getConfig();
+        boolean wasEnabled = config.enabled;
         config.enabled = value;
         config.save();
+        if (value && !wasEnabled) {
+            EndermanGriefControlMod.getHeldBlockMonitor().runDiscoveryScan(); // May have accumulated stuck holders.
+        }
         ctx.getSource().sendSuccess(() -> Component.literal(
                 "Enderman grief prevention is now " + (value ? "enabled" : "disabled") + "."), true);
         return 1;
